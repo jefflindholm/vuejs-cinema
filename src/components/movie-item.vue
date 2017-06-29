@@ -1,0 +1,49 @@
+<template>
+    <div class="movie">
+        <div class="movie-col-left">
+            <img :src="movie.Poster" alt="">
+        </div>
+        <div class="movie-col-right">
+            <div class="movie-title">
+                <h2>{{movie.Title}}</h2>
+                <span class="movie-rating">{{movie.Rated}}</span>
+            </div>
+            <div class="movie-sessions">
+                <div class="session-time-wrapper" :key="idx" v-for="(session, idx) in filteredSessions(sessions)">
+                    <div class="session-time">{{ formatTime(session.time) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    import times from '../util/times';
+
+    export default {
+        props: ['movie', 'sessions', 'day', 'time'],
+        methods: {
+            formatTime(time) {
+                return this.$moment(time).format('h:mm A')
+            },
+            filteredSessions(sessions) {
+                return sessions.filter(this.movieTimeFilter);
+            },
+            movieTimeFilter(session) {
+
+                if (!this.day.isSame(this.$moment(session.time), 'day')) {
+                    return false;
+                }
+                console.log(this.$moment(session.time));
+                if (this.time.length === 0 || this.time.length === 2) {
+                    return true;
+                }
+                if (this.time[0] === times.AFTER_6PM) {
+                    return this.$moment(session.time).hour() >= 18;
+                }
+                return this.$moment(session.time).hour() < 18;
+            }
+        }
+    }
+</script>
+<style>
+</style>
