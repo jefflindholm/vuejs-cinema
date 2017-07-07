@@ -14,7 +14,13 @@
 </head>
 <body>
 <div id="app">
-    <app></app>
+    <div id="title">
+        <img src="/public/logo.png">
+        <h1>Vue.js Cinema</h1>
+    </div>
+    <keep-alive>
+        <router-view :movies="movies"></router-view>
+    </keep-alive>
 </div>
 <script src="/dist/build.js"></script>
 </body>

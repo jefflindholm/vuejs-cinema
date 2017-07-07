@@ -1,12 +1,20 @@
 <template>
     <div id="movie-list">
         <div v-if="filteredMovies.length">
-            <movie-item :key="movie.id"
+            <movie-item
+                :key="movie.id"
                 v-for="movie in filteredMovies"
-                :day="day"
-                :movie="movie.movie"
-                :time="time"
-                :sessions="movie.sessions"></movie-item>
+                :movie="movie.movie">
+                <div class="movie-sessions">
+                    <div class="session-time-wrapper tooltip-wrapper"
+                        :key="idx"
+                        v-for="(session, idx) in filteredSessions(movie.sessions)"
+                        v-tooltip="{ seats: session.seats }"
+                    >
+                        <div class="session-time">{{ formatTime(session.time) }}</div>
+                    </div>
+                </div>
+            </movie-item>
         </div>
         <div v-else-if="movies.length" class="no-results">
             No results for {{selectedGenres}}.
@@ -17,8 +25,8 @@
     </div>
 </template>
 <script>
-    import genres from '../util/genres';
-    import times from '../util/times';
+    import genres from 'util/genres';
+    import times from 'util/times';
     import movieItem from './movie-item.vue';
     export default {
         components: {
@@ -55,7 +63,13 @@
                     return this.$moment(session.time).hour() >= 18;
                 }
                 return this.$moment(session.time).hour() < 18;
-            }
+            },
+            formatTime(time) {
+                return this.$moment(time).format('h:mm A')
+            },
+            filteredSessions(sessions) {
+                return sessions.filter(this.movieTimeFilter);
+            },
         },
         computed: {
             filteredMovies() {

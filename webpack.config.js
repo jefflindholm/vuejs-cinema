@@ -48,7 +48,8 @@ module.exports = {
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.common.js'
-        }
+        },
+        modules: ['node_modules', 'src']
     },
     devServer: {
         historyApiFallback: true,
